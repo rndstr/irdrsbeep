@@ -1,5 +1,6 @@
 #!python3
 
+import configparser
 import irsdk
 import time
 import winsound
@@ -35,14 +36,19 @@ def loop():
         return
 
     # DrsStatus: 0 = inactive, 1 = can be activated in next DRS zone, 2 = can be activated now, 3 = active.
-    if drs == 2 and state.drs == 1:
-        winsound.Beep(2500, 1000)
+
+    if state.drs == 0 and drs == 1:
+        winsound.Beep(config.getint('drs', 'upcoming_frequency', fallback=1500), config.getint('drs', 'upcoming_duration', fallback=300)
+    if state.drs == 1 and drs == 2:
+        winsound.Beep(config.getint('drs', 'available_frequency', fallback=5000), config.getint('drs', 'available_duration', fallback=1000)
 
     if drs != state.drs:
         state.drs = drs
         print('tick change: ', drs)
 
 if __name__ == '__main__':
+    config = configparser.ConfigParser()
+    config.read('irdrsbeep.ini')
     ir = irsdk.IRSDK()
     state = State()
     try:
