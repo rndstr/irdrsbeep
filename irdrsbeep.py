@@ -1,10 +1,22 @@
 #!python3
 
+import argparse
 import configparser
 import irsdk
 import time
-import winsound
 import functools
+
+try:
+    import winsound
+except ImportError:
+    import os
+    def beep(frequency,duration):
+        os.system('beep -f %s -l %s' % (frequency,duration))
+else:
+    def beep(frequency,duration):
+        winsound.Beep(frequency,duration)
+
+VERSION = '0.1.0'
 
 # no auto-flushing in windows
 print = functools.partial(print, flush=True)
@@ -21,12 +33,27 @@ def check_iracing():
         print('irsdk disconnected')
     elif not state.connected:
         if not ir.startup():
-            print('waiting...')
+            pass
         elif ir.is_connected:
             state.connected = True
             print('irsdk connected')
         else:
             print('not connected')
+
+
+def beep_upcoming():
+    frequency = config.getint('drs', 'upcoming_frequency', fallback=500)
+    duration = config.getint('drs', 'upcoming_duration', fallback=100)
+    if frequency == 0:
+        return
+    beep(frequency, duration)
+
+def beep_available():
+    frequency = config.getint('drs', 'available_frequency', fallback=1500)
+    duration = config.getint('drs', 'available_duration', fallback=200)
+    if frequency == 0:
+        return
+    beep(frequency, duration)
 
 def loop():
     # freeze for consisten per-frame data
@@ -38,19 +65,35 @@ def loop():
 
     # DrsStatus: 0 = inactive, 1 = can be activated in next DRS zone, 2 = can be activated now, 3 = active.
     if state.drs != 0 and drs == 1:
-        winsound.Beep(config.getint('drs', 'upcoming_frequency', fallback=500), config.getint('drs', 'upcoming_duration', fallback=100))
+        beep_upcoming()
     if state.drs == 1 and drs == 2:
-        winsound.Beep(config.getint('drs', 'available_frequency', fallback=1500), config.getint('drs', 'available_duration', fallback=200))
+        beep_available()
 
     if drs != state.drs:
         state.drs = drs
-        print('tick change: ', drs)
+        if args.verbose:
+            print('tick change: ', drs)
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='drs beep for iRacing %s' % VERSION)
+    parser.add_argument('-v', '--version', action='version', version=VERSION, help='show version and exit')
+    parser.add_argument('--beep', action='store_true', help='play "upcoming" and "available" drs beep sounds, then exit')
+    parser.add_argument('--verbose', action='store_true', help='verbose output for debugging')
+
+    args = parser.parse_args()
     config = configparser.ConfigParser()
     config.read('irdrsbeep.ini')
+
+    if args.beep:
+        print('"drs upcoming" beep')
+        beep_upcoming()
+        print('"drs available" beep')
+        beep_available()
+        quit()
+
     ir = irsdk.IRSDK()
     state = State()
+    print("waiting for iracing...")
     try:
         while True:
             check_iracing()
