@@ -16,7 +16,7 @@ else:
     def beep(frequency,duration):
         winsound.Beep(frequency,duration)
 
-VERSION = '0.1.0'
+VERSION = '0.2.0'
 
 # no auto-flushing in windows
 print = functools.partial(print, flush=True)
