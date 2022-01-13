@@ -1,5 +1,6 @@
-__pycache__
-build
+__pycache__/
+build/
+irdrsbeep/
 *.spec
-irdrsbeep.exe
-irdrsbeep.zip
+*.exe
+*.zip
