@@ -65,23 +65,28 @@ def loop():
 
     # DrsStatus: 0 = inactive, 1 = can be activated in next DRS zone, 2 = can be activated now, 3 = active.
     if state.drs == 0 and drs == 1:
+        if args.verbose:
+            print('[verbose] upcoming beep')
         beep_upcoming()
     if state.drs == 1 and (drs == 2 or drs == 3):
         beep_available()
+        if args.verbose:
+            print('[verbose] available beep')
 
     if drs != state.drs:
         state.drs = drs
         if args.verbose:
-            print('drs update = ', drs)
+            print('[verbose] drs update = ', drs)
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='drs beep for iRacing %s' % VERSION)
-    parser.add_argument('-v', '--version', action='version', version=VERSION, help='show version and exit')
+    parser = argparse.ArgumentParser(description='drs beep for iRacing v%s' % VERSION)
+    parser.add_argument('-v', '--version', action='version', version='v%s' % VERSION, help='show version and exit')
     parser.add_argument('--beep', action='store_true', help='play "upcoming" and "available" drs beep sounds, then exit')
     parser.add_argument('--verbose', action='store_true', help='verbose output for debugging')
     parser.add_argument('--tick', type=float, default=0.05, help=argparse.SUPPRESS)
 
     args = parser.parse_args()
+    print("drs beep for iRacing v%s" % VERSION)
     config = configparser.ConfigParser()
     config.read('irdrsbeep.ini')
 
