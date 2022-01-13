@@ -3,7 +3,7 @@ set -e
 [[ $# -ne 1 ]] && { echo "missing version"; exit 1; }
 
 NAME="irdrsbeep"
-ZIP="$NAME-v$1.zip"
+ZIP="$NAME-v$1-bin.zip"
 
 # clean
 rm -rf $NAME $ZIP
