@@ -86,7 +86,9 @@ if __name__ == '__main__':
     parser.add_argument('--tick', type=float, default=0.05, help=argparse.SUPPRESS)
 
     args = parser.parse_args()
-    print("drs beep for iRacing v%s" % VERSION)
+    print('drs beep for iRacing v%s' % VERSION)
+    print('  github.com/rndstr/irdrsbeep')
+    print()
     config = configparser.ConfigParser()
     config.read('irdrsbeep.ini')
 

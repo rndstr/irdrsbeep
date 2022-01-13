@@ -1,7 +1,14 @@
 #!/bin/sh
 set -e
-rm -f irdrsbeep.exe irdrsbeep.zip
-pyinstaller --onefile irdrsbeep.py --distpath .
-zip irdrsbeep.zip irdrsbeep.ini irdrsbeep.exe
+[[ $# -ne 1 ]] && { echo "missing version"; exit 1; }
 
+NAME="irdrsbeep"
+ZIP="$NAME-v$1.zip"
+
+# clean
+rm -rf $NAME $ZIP
+mkdir $NAME
+pyinstaller --onefile irdrsbeep.py --distpath .
+cp irdrsbeep.exe irdrsbeep.ini README.md $NAME
+zip $ZIP $NAME/*
 
