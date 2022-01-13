@@ -38,9 +38,9 @@ def loop():
 
     # DrsStatus: 0 = inactive, 1 = can be activated in next DRS zone, 2 = can be activated now, 3 = active.
     if state.drs != 0 and drs == 1:
-        winsound.Beep(config.getint('drs', 'upcoming_frequency', fallback=2500), config.getint('drs', 'upcoming_duration', fallback=300))
+        winsound.Beep(config.getint('drs', 'upcoming_frequency', fallback=500), config.getint('drs', 'upcoming_duration', fallback=100))
     if state.drs == 1 and drs == 2:
-        winsound.Beep(config.getint('drs', 'available_frequency', fallback=5000), config.getint('drs', 'available_duration', fallback=1000))
+        winsound.Beep(config.getint('drs', 'available_frequency', fallback=1500), config.getint('drs', 'available_duration', fallback=200))
 
     if drs != state.drs:
         state.drs = drs
