@@ -108,7 +108,7 @@ if __name__ == '__main__':
             check_iracing()
             if state.connected:
                 loop()
-                time.sleep(0.05)
+                time.sleep(args.tick)
             else:
                 time.sleep(1)
     except KeyboardInterrupt:
